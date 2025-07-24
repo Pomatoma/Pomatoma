@@ -7,9 +7,9 @@ import RootLayout from './components/RootLayout.jsx';
 
 // Pages
 import MainPage from './features/Main/MainPage.jsx';
-import TimerPage from './features/Timer/TimerPage.jsx';
+import TimerPage from './features/Time/TimerPage.jsx';
 import AuthPage from './features/Login/pages/AuthPage.jsx';
-import ForgotPasswordPage from './pages/features/login/pages/ForgotPasswordPage.jsx';
+import ForgotPasswordPage from './features/login/pages/ForgotPasswordPage.jsx';
 
 const router = createBrowserRouter([
   {
