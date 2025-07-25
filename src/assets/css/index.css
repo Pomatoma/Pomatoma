@@ -1,1 +1,13 @@
 @import 'tailwindcss';
+
+@layer base {
+  :root {
+    --color-primary: #FF5B5E;
+    --color-secondary: #FFE3E3;
+  }
+
+  /* 전역 폰트 지정 */
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+}
