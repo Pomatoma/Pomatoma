@@ -26,7 +26,7 @@ export default function Button({ size = 'lg', filled = 'filled', disabled = fals
     },
     outline: {
       enabled:
-        'border-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white focus:ring-[var(--color-primary)]/50 active:scale-95',
+        'border-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-white hover:bg-[var(--color-primary)] hover:text-white focus:ring-[var(--color-primary)]/50 active:scale-95',
       disabled: 'border-2 border-gray-300 text-gray-400 bg-transparent cursor-not-allowed',
     },
   };
