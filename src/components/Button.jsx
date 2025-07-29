@@ -7,7 +7,7 @@ import React from 'react';
  * onClick: onClick 함수
  */
 
-export default function Button({ size = 'lg', filled = 'filled', disabled = false, onClick, children }) {
+export default function Button({ size = 'lg', filled = 'filled', disabled = false, onClick, children, ...rest }) {
   const baseClasses =
     'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
 
@@ -36,7 +36,7 @@ export default function Button({ size = 'lg', filled = 'filled', disabled = fals
   );
 
   return (
-    <button className={className} disabled={disabled} onClick={!disabled ? onClick : undefined}>
+    <button className={className} disabled={disabled} onClick={!disabled ? onClick : undefined} {...rest}>
       {children}
     </button>
   );
