@@ -2,6 +2,7 @@ import React from 'react';
 import FormInput from './FormInput';
 import { useForm } from 'react-hook-form';
 import Button from '../../../components/Button';
+import { useUserStore } from '../../../store/userStore';
 
 export default function RegisterForm() {
   const {
@@ -21,8 +22,12 @@ export default function RegisterForm() {
     },
   });
 
+  const { addUser } = useUserStore();
+
   const onSubmit = (data) => {
-    console.log(data);
+    console.log('회원가입 시작!');
+    const result = addUser(data);
+    console.log(result.message);
   };
 
   return (
