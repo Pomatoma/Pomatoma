@@ -1,6 +1,6 @@
 // firebase.test.js
 import { describe, test, expect, beforeAll } from 'vitest';
-import { app, analytics } from '../../../../config/firbaseConfig';
+import { app, analytics, db, auth } from '../../../../config/firbaseConfig';
 
 describe('Firebase 연결 테스트', () => {
   test('Firebase 앱이 정상적으로 초기화되어야 함', () => {
@@ -12,6 +12,16 @@ describe('Firebase 연결 테스트', () => {
   test('Analytics가 정상적으로 초기화되어야 함', () => {
     expect(analytics).toBeDefined();
     expect(analytics.app).toBe(app);
+  });
+
+  test('FireBaseStore가 정상적으로 초기화되어야 함', () => {
+    expect(db).toBeDefined();
+    expect(db.app).toBe(app);
+  });
+
+  test('Auth가 정상적으로 초기화 되어야 함', () => {
+    expect(auth).toBeDefined();
+    expect(auth.app).toBe(app);
   });
 
   test('Firebase 설정값이 유효해야 함', () => {
