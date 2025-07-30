@@ -10,7 +10,7 @@ export default function RootLayout() {
       <main className='container mx-auto px-4 py-8'>
         <Outlet />
       </main>
-      <FloatButton />
+      {/* <FloatButton /> */}
     </div>
   );
 }
