@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database'; // realtime database 초기화
 import { firebaseSettings } from './env';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -18,10 +18,10 @@ const firebaseConfig = {
   messagingSenderId: firebaseSettings.messagingSenderId,
   appId: firebaseSettings.appId,
   measurementId: firebaseSettings.measurementId,
+  databaseURL: firebaseSettings.databaseURL,
 };
-
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-export const db = getFirestore(app);
+export const db = getDatabase(app);  // app 인스턴스를 전달하여 올바르게 초기화
 export const auth = getAuth(app);
