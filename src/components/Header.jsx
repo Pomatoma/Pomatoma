@@ -29,7 +29,7 @@ export default function Header() {
             filled='outline'
             disabled={false}
             onClick={() => {
-              navigate('/auth');
+              navigate('/auth/login');
             }}>
             로그인
           </Button>
