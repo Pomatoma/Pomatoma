@@ -1,34 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '../../components/Button';
 import useTimer from './hook/useTimer';
+import { useNavigate } from 'react-router-dom';
+import TimerDisplay from './components/TimerDisplay';
 
 export default function TimerPage() {
+  const navigate = useNavigate();
   const {
     mode,
-    remaining,
     isRunning,
     start,
     pause,
     resume,
+    formatted
   } = useTimer();
+
+  useEffect(() => {
+    start()
+  }, []);
 
   // 그만두기
   const handleStop = () => {
-    console.log('그만두기');
+    pause();
+    if(window.confirm('그만 두시겠습니까? (스터디는 이전까지 기록됩니다)')){
+      start();
+      navigate('/');
+    } else {
+      setTimeout(() => {
+        resume();
+      }, 0);
+    }
   }
+  
   // 일시정지
   const handlePauseResume = () => {
-    console.log('일시정지');
+    isRunning ? pause() : resume()
   }
+
   return (
     <main className='flex flex-col space-y-20'>
       {/* 타이머 */}
-      <section className='w-full h-120 border'>타이머 들어갈 공간</section>
+      <section className='flex justify-center'>
+        <TimerDisplay mode={mode} formatted={formatted} />
+        </section>
       {/* 버튼 컨테이터 */}
       <section className='w-full py-4'>
         <div className='flex justify-center gap-4'>
           <Button size='md' filled='outline' onClick={handleStop}>그만두기</Button>
-          <Button size='md' filled='filled' onClick={handlePauseResume}>일시정지</Button>
+          <Button size='md' filled='filled' onClick={handlePauseResume}>
+            {isRunning ? '일시정지' : '이어하기'}
+          </Button>
         </div>
       </section>
     </main>
