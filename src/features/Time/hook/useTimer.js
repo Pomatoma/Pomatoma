@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from "react";
  - cycles : 반복 횟수
  */
 export default function useTimer({
-  studySec = 5, // 임시 스터디시간 1분
-  breakSec = 5, // 임시 쉬는시간 1분
-  cycles=3,
+  studySec,
+  breakSec,
+  cycles,
   autoStart = true,
 } = {}){
   // 모드 'study' | 'break'
