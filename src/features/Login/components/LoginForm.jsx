@@ -2,8 +2,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import FormInput from './FormInput';
 import Button from '../../../components/Button';
+import { login } from '../service/authService';
+import { useNavigate } from 'react-router-dom';
+import useToast from '../hooks/useToast';
+import { useUserStore } from '../../../store/userStore';
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+  const { isLoading } = useUserStore();
+  const { showLoading } = useToast();
+
   const {
     register,
     handleSubmit,
@@ -17,8 +25,34 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    
+    // 로딩 시작
+    const loadingToast = showLoading('로그인 중...');
+    
+    try {
+      const result = await login(data); 
+      console.log(result);
+      
+      if(result.success === true) {
+        // 로딩 종료 및 성공 메시지
+        loadingToast.success('로그인 되었습니다!');
+        
+        // 잠시 후 메인 페이지로 이동
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        console.log(result.error);
+        // 로딩 종료 및 에러 메시지
+        loadingToast.error(result.error || '로그인에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('로그인 중 오류 발생:', error);
+      // 로딩 종료 및 에러 메시지
+      loadingToast.error('로그인 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -55,7 +89,7 @@ export default function LoginForm() {
             })}
           />
 
-          <Button size='full' filled='filled' disabled={false} type='submit'>
+          <Button size='full' filled='filled' disabled={isLoading} type='submit'>
             로그인
           </Button>
         </form>

@@ -20,6 +20,7 @@ export default function Header() {
             disabled={false}
             onClick={() => {
               logout();
+              navigate('/');
             }}>
             로그아웃
           </Button>
