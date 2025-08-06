@@ -2,6 +2,10 @@ import React from 'react';
 import FormInput from './FormInput';
 import { useForm } from 'react-hook-form';
 import Button from '../../../components/Button';
+import { signUp, addUserStore } from '../service/authService';
+// import { setActive } from '../pages/AuthPage';
+import { useNavigate } from 'react-router-dom';
+import useToast from '../hooks/useToast';
 import { useUserStore } from '../../../store/userStore';
 
 export default function RegisterForm() {
@@ -21,13 +25,46 @@ export default function RegisterForm() {
       passwordConfirm: '',
     },
   });
-
-  const { addUser } = useUserStore();
-
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+  const { showLoading } = useToast();
+  const { isLoading } = useUserStore();
+  const onSubmit = async (data) => {
     console.log('회원가입 시작!');
-    const result = addUser(data);
-    console.log(result.message);
+    
+    // 로딩 시작
+    const loadingToast = showLoading('회원가입 중...');
+    
+    try {
+      const result = await signUp(data);
+      console.log(result.user.uid);
+      
+      // 만약 회원이 생성되었을 경우
+      if(result.success === true) {
+        // 회원 정보를 realtime database에 저장
+        const addResult = await addUserStore({
+          username: data.username,
+          userUid: result.user.uid,
+        });
+        
+        // 로딩 종료 및 성공 메시지
+        loadingToast.success('회원가입이 완료되었습니다! 로그인해주세요.');
+        
+        // 잠시 후 로그인 페이지로 이동
+        setTimeout(() => {
+          navigate('/auth/login');
+        }, 1500);
+      } 
+      // 만약 회원이 생성되지 않았을 경우
+      else {
+        console.log(result.error);
+        // 로딩 종료 및 에러 메시지
+        loadingToast.error(result.error || '회원가입에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('회원가입 중 오류 발생:', error);
+      // 로딩 종료 및 에러 메시지
+      loadingToast.error('회원가입 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -95,7 +132,7 @@ export default function RegisterForm() {
             })}
           />
 
-          <Button size='full' filled='filled' disabled={false} type='submit'>
+          <Button size='full' filled='filled' disabled={isLoading} type='submit'>
             회원가입
           </Button>
         </form>
