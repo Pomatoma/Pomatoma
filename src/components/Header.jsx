@@ -20,6 +20,7 @@ export default function Header() {
             disabled={false}
             onClick={() => {
               logout();
+              navigate('/');
             }}>
             로그아웃
           </Button>
@@ -29,7 +30,7 @@ export default function Header() {
             filled='outline'
             disabled={false}
             onClick={() => {
-              navigate('/auth');
+              navigate('/auth/login');
             }}>
             로그인
           </Button>
