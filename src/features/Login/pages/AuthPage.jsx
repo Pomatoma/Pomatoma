@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RegisterForm from '../components/RegisterForm';
 import LoginForm from '../components/LoginForm';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 export default function AuthPage() {
   const location = useLocation();
@@ -40,6 +41,7 @@ export default function AuthPage() {
         {/* 보여지는 곳 */}
         <div className='p-6 md:p-8'><Outlet /></div>
       </div>
+      <Toaster position='top-center' />
     </div>
   );
 }

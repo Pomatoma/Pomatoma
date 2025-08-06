@@ -3,7 +3,6 @@ import FormInput from './FormInput';
 import { useForm } from 'react-hook-form';
 import Button from '../../../components/Button';
 import { signUp, addUserStore } from '../service/authService';
-// import { setActive } from '../pages/AuthPage';
 import { useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import { useUserStore } from '../../../store/userStore';
@@ -29,15 +28,11 @@ export default function RegisterForm() {
   const { showLoading } = useToast();
   const { isLoading } = useUserStore();
   const onSubmit = async (data) => {
-    console.log('회원가입 시작!');
-    
     // 로딩 시작
     const loadingToast = showLoading('회원가입 중...');
     
     try {
-      const result = await signUp(data);
-      console.log(result.user.uid);
-      
+      const result = await signUp(data);      
       // 만약 회원이 생성되었을 경우
       if(result.success === true) {
         // 회원 정보를 realtime database에 저장
