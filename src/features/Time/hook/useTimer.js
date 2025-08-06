@@ -5,7 +5,12 @@ import { useEffect, useRef, useState } from "react";
  - breakSec : 쉬는 시간(초)
  - cycles : 반복 횟수
  */
-export default function useTimer({studySec, breakSec, cycles=1}){
+export default function useTimer({
+  studySec = 5, // 임시 스터디시간 1분
+  breakSec = 5, // 임시 쉬는시간 1분
+  cycles=3,
+  autoStart = true,
+} = {}){
   // 모드 'study' | 'break'
   const [mode, setMode] = useState('study');
   // 남은 시간
@@ -23,12 +28,28 @@ export default function useTimer({studySec, breakSec, cycles=1}){
     return `${m}:${s}`
   }
 
+  // 마운트 시 자동으로 start
+  useEffect(() => {
+    if(autoStart) {
+      setMode('study');
+      setRemaining(studySec);
+      setCompletedCycles(0);
+      setIsRunning(true);
+    }
+  },[]);
+
   useEffect(() => {
     if(!isRunning) return;
 
     timerRef.current = setInterval(() => {
       setRemaining(prev => {
-        if(prev<=1){
+        if(prev >1) {
+          return prev-1;
+        }
+        if(prev === 1) {
+          return 0;
+        }
+       
           clearInterval(timerRef.current);
 
           // study -> break
@@ -36,6 +57,7 @@ export default function useTimer({studySec, breakSec, cycles=1}){
           if(mode === 'study'){
             const count = completedCycles +1;
             setCompletedCycles(count);
+            console.log('[현재까지 완료된 횟수] : ', completedCycles);
             setMode('break');
             return breakSec;
           }
@@ -45,6 +67,7 @@ export default function useTimer({studySec, breakSec, cycles=1}){
           // completedCycles >= cycles면 타이머 종료
           if(mode === 'break'){
             if(completedCycles>= cycles){
+              console.log('[타이머 종료] completedCycles : ', completedCycles);
               setIsRunning(false);
               return 0;
             } else{
@@ -52,8 +75,7 @@ export default function useTimer({studySec, breakSec, cycles=1}){
               return studySec;
             }
           }
-        }
-        return prev-1;
+          return 0;
       })
     },1000)
     return () => clearInterval(timerRef.current);
@@ -73,11 +95,10 @@ export default function useTimer({studySec, breakSec, cycles=1}){
   };
 
   const resume = () => {
-    if(!isRunning) setIsRunning(true)
+    setIsRunning(true)
   };
   return {
     mode,
-    remaining,
     formatted: formatTime(remaining),
     isRunning,
     completedCycles,
