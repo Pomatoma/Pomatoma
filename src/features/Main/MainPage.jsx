@@ -7,6 +7,8 @@ import {useNavigate} from "react-router-dom";
 export default function MainPage() {
     let navigate = useNavigate();
     const [repeat, setRepeat] = useState('');
+    const [studyTime, setStudyTime] = useState('50');
+    const [breakTime, setBreakTime] = useState('10');
 
     const handleStart = () => {
         if (!repeat || Number(repeat) < 1) {
@@ -22,11 +24,11 @@ export default function MainPage() {
               <p className="text-4xl font-bold mb-20 mt-20">루틴 설정하기</p>
               <div className="flex flex-row justify-between w-65 mb-5">
                   <span className="text-lg">스터디 시간</span>
-                  <SelectField/>
+                  <SelectField value={studyTime} onChange={setStudyTime} />
               </div>
               <div className="flex flex-row justify-between w-65 mb-5">
                   <span className="text-lg">쉬는 시간</span>
-                  <SelectField/>
+                  <SelectField value={breakTime} onChange={setBreakTime} />
               </div>
               <div className="flex flex-row justify-between w-65 mb-20">
                   <span className="text-lg">반복 횟수</span>
