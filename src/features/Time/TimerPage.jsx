@@ -38,9 +38,9 @@ export default function TimerPage() {
   }
 
   return (
-    <main className='flex flex-col space-y-20'>
+    <main className='flex flex-col h-[66vh]'>
       {/* 타이머 */}
-      <section className='flex justify-center'>
+      <section className='flex-1 flex items-center justify-center'>
         <TimerDisplay mode={mode} formatted={formatted} />
         </section>
       {/* 버튼 컨테이터 */}
