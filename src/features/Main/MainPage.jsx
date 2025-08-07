@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import SelectField from "../../components/SelectField.jsx";
 import Button from "../../components/Button.jsx";
 import tomato from "../../assets/icons/tomato.svg";
@@ -6,23 +6,21 @@ import {useNavigate} from "react-router-dom";
 import {useTimerStore} from "../../store/useTimerStore.js";
 
 export default function MainPage() {
-    let navigate = useNavigate();
-    const [repeat, setRepeat] = useState('1');
-    const [studyTime, setStudyTime] = useState('50');
-    const [breakTime, setBreakTime] = useState('10');
-
-    const setStudy = useTimerStore(state => state.setStudyTime);
-    const setBreak = useTimerStore(state => state.setBreakTime);
-    const setRepeatCount = useTimerStore(state => state.setCycles);
+    const navigate = useNavigate();
+    const {
+        studyTime,
+        breakTime,
+        cycles,
+        setStudyTime,
+        setBreakTime,
+        setCycles,
+      } = useTimerStore()
 
     const handleStart = () => {
-        if (!repeat || Number(repeat) < 1) {
-            alert("반복횟수를 1 이상으로 입력해주세요.")
+        if (cycles < 1) {
+           return alert("반복횟수를 1 이상으로 입력해주세요.")
         }
         else {
-            setStudy(Number(studyTime));
-            setBreak(Number(breakTime));
-            setRepeatCount(Number(repeat));
             navigate('/timer');
         }
     }
@@ -43,8 +41,8 @@ export default function MainPage() {
                   <input
                       type="number"
                       min="1"
-                      value={repeat}
-                      onChange={(e) => setRepeat(e.target.value)}
+                      value={cycles}
+                      onChange={(e) => setCycles(Number(e.target.value))}
                       className="rounded-sm border border-[#FF5B5E] w-40 h-7 px-2"
                   />
               </div>
