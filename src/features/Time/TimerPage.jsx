@@ -3,9 +3,11 @@ import Button from '../../components/Button';
 import useTimer from './hook/useTimer';
 import { useNavigate } from 'react-router-dom';
 import TimerDisplay from './components/TimerDisplay';
+import { useTimerStore } from '../../store/useTimerStore';
 
 export default function TimerPage() {
   const navigate = useNavigate();
+  const {studyTime, breakTime, cycles} = useTimerStore();
   const {
     mode,
     isRunning,
@@ -13,7 +15,11 @@ export default function TimerPage() {
     pause,
     resume,
     formatted
-  } = useTimer();
+  } = useTimer({
+    studySec: studyTime * 60,
+    breakSec: breakTime * 60,
+    cycles: cycles,
+  });
 
   useEffect(() => {
     start()
