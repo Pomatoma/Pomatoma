@@ -103,6 +103,7 @@ export default function useTimer({
     isRunning,
     completedCycles,
     totalCycles: cycles,
+    remaining,
     start,
     pause,
     resume,

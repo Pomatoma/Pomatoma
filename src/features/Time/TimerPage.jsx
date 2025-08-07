@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Button from '../../components/Button';
 import useTimer from './hook/useTimer';
 import { useNavigate } from 'react-router-dom';
 import TimerDisplay from './components/TimerDisplay';
 import { useTimerStore } from '../../store/useTimerStore';
+// 알림 사용
+import notification from '../../assets/sounds/notification.mp3';
+import useSound from 'use-sound';
 
 export default function TimerPage() {
   const navigate = useNavigate();
@@ -11,6 +14,7 @@ export default function TimerPage() {
   const {
     mode,
     isRunning,
+    remaining,
     start,
     pause,
     resume,
@@ -20,10 +24,20 @@ export default function TimerPage() {
     breakSec: breakTime * 60,
     cycles: cycles,
   });
+  const [playAlarm] = useSound(notification);
+  // remaining 값 저장
+  const prevRemRef = useRef(remaining);
 
   useEffect(() => {
     start()
   }, []);
+
+  useEffect(() => {
+    if(prevRemRef.current > 0 && remaining === 0){
+      playAlarm()
+    }
+    prevRemRef.current = remaining
+  },[remaining, playAlarm])
 
   // 그만두기
   const handleStop = () => {
