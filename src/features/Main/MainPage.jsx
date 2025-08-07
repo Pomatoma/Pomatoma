@@ -3,6 +3,7 @@ import SelectField from "../../components/SelectField.jsx";
 import Button from "../../components/Button.jsx";
 import tomato from "../../assets/icons/tomato.svg";
 import {useNavigate} from "react-router-dom";
+import {useTimerStore} from "../../store/useTimerStore.js";
 
 export default function MainPage() {
     let navigate = useNavigate();
@@ -10,11 +11,18 @@ export default function MainPage() {
     const [studyTime, setStudyTime] = useState('50');
     const [breakTime, setBreakTime] = useState('10');
 
+    const setStudy = useTimerStore(state => state.setStudyTime);
+    const setBreak = useTimerStore(state => state.setBreakTime);
+    const setRepeatCount = useTimerStore(state => state.setCycles);
+
     const handleStart = () => {
         if (!repeat || Number(repeat) < 1) {
             alert("반복횟수를 1 이상으로 입력해주세요.")
         }
         else {
+            setStudy(Number(studyTime));
+            setBreak(Number(breakTime));
+            setRepeatCount(Number(repeat));
             navigate('/timer');
         }
     }
