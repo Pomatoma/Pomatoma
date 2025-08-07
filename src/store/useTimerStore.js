@@ -6,6 +6,6 @@ export const useTimerStore = create(set => ({
   cycles: 1,
   // 상태 변경
   setStudyTime: minutes => set({studyTime: minutes}),
-  setBreakTime: minutes => set({studyTime: minutes}),
+  setBreakTime: minutes => set({breakTime: minutes}),
   setCycles: count => set({cycles: count}),
 }))
