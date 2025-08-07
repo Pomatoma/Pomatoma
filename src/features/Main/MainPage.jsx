@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 
 export default function MainPage() {
     let navigate = useNavigate();
-    const [repeat, setRepeat] = useState('');
+    const [repeat, setRepeat] = useState('1');
     const [studyTime, setStudyTime] = useState('50');
     const [breakTime, setBreakTime] = useState('10');
 
