@@ -17,7 +17,7 @@ export default function AuthPage() {
     <div className=' flex justify-center items-center p-2'>
       <div className='w-lg max-w-4xl bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden'>
         {/* 탭 */}
-        <div className='bg-white px-4 py-5'>
+        {location.pathname !== '/auth/forgot-password' && <div className='bg-white px-4 py-5'>
           <ul className='flex justify-center items-center gap-8 mt-5'>
             {components.map((value, idx) => (
               <li key={idx}>
@@ -36,7 +36,7 @@ export default function AuthPage() {
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
 
         {/* 보여지는 곳 */}
         <div className='p-6 md:p-8'><Outlet /></div>
