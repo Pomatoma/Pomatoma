@@ -30,11 +30,11 @@ export default function MainPage() {
               <p className="text-4xl font-bold mb-20 mt-20">루틴 설정하기</p>
               <div className="flex flex-row justify-between w-65 mb-5">
                   <span className="text-lg">스터디 시간</span>
-                  <SelectField value={studyTime} onChange={setStudyTime} />
+                  <SelectField value={studyTime} onChange={setStudyTime}/>
               </div>
               <div className="flex flex-row justify-between w-65 mb-5">
                   <span className="text-lg">쉬는 시간</span>
-                  <SelectField value={breakTime} onChange={setBreakTime} />
+                  <SelectField value={breakTime} onChange={setBreakTime}/>
               </div>
               <div className="flex flex-row justify-between w-65 mb-20">
                   <span className="text-lg">반복 횟수</span>
@@ -48,16 +48,10 @@ export default function MainPage() {
               </div>
               <div className="items-center justify-items-center">
                   <Button size='md' filled='filled' onClick={handleStart}>
-                  시작하기
+                      시작하기
                   </Button>
-              </div>
-              <div>
-                  <img
-                      src={tomato}
-                      className="absolute bottom-5 right-10 w-20 h-20"
-                  />
               </div>
           </div>
       </>
-  );
+    );
 }
