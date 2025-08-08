@@ -101,27 +101,23 @@ export async function checkUser({username, email}) {
       });
 
       if (foundUser) {
-        console.log("username과 email 모두 일치하는 회원:", foundUser);
         return {
           success: true,
           user: foundUser,
         };
       } else {
-        console.log("username은 일치하지만 email이 다른 회원입니다.");
         return {
           success: false,
           error: '이메일이 일치하지 않습니다.',
         };
       }
     } else {
-      console.log("해당 username을 가진 회원이 존재하지 않습니다.");
       return {
         success: false,
         error: '회원이 존재하지 않습니다.',
       };
     }
   } catch (error) {
-    console.error('회원 확인 실패:', error);
     return {
       success: false,
       error: '회원 확인 중 오류가 발생했습니다.', // 에러 메시지를 좀 더 명확하게
@@ -146,7 +142,6 @@ export async function sendEmailtoResetPassword(email) {
         error: error.message,
       }
     })
-    console.log('비밀번호 재설정 이메일 보내기 결과 (provider)', result);
     return result;
   } catch (error) {
     console.error('비밀번호 재설정 이메일 보내기 실패:', error);

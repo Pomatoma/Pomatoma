@@ -6,10 +6,12 @@ import { findPassword } from '../service/authService';
 import FormInput from '../components/FormInput';
 import Button from '../../../components/Button';
 import { Toaster } from 'react-hot-toast';
+import useToast from '../hooks/useToast';
+import { useUserStore } from '../../../store/userStore';
 
 export default function ForgotPasswordPage() {
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { showLoading } = useToast();
+  const { isLoading } = useUserStore();
   const {
     register,
     formState: { errors },
@@ -26,22 +28,23 @@ export default function ForgotPasswordPage() {
   // 비밀번호 재설정 이메일 보내기
   const onSubmit = async (data) => {
     const { username, email } = data;
+    const loadingToast = showLoading('비밀번호 재설정 메일 보내는 중...');
     if(!username) {
-      toast.error('이름을 입력해주세요.');
+      const showError = showError('이름을 입력해주세요.');
       return;
     }
     if(!email) {
-      toast.error('이메일을 입력해주세요.');
+      const showError = showError('이메일을 입력해주세요.');
       return;
     }
     // 실제 있는 계정인지 확인 해야함
     const result = await findPassword({username, email});
     
     if(result.success) {
-      toast.success(result.message);
+      loadingToast.success(result.message);
       navigate('/auth/login');
     } else {
-      toast.error(result.error);
+      loadingToast.error(result.error);
     }
   }
   return (

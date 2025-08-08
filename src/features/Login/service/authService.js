@@ -32,18 +32,18 @@ export const login = async (userInfo) => {
 
 // 비밀번호 찾기 로직
 export const findPassword = async (userInfo) => {
+  useUserStore.getState().setLoading(true);
   // 회원 확인
   const user = await checkUser(userInfo);
-  
   if(user.success === false) {
+    useUserStore.getState().setLoading(false);
     return {
       success: false,
       error: user.error,
     };
   } else {
-    console.log('비밀번호 찾기 로직 호출', userInfo.email);
     const result = await sendEmailtoResetPassword(userInfo.email);
-    console.log('비밀번호 찾기 결과 (service)', result);
+    useUserStore.getState().setLoading(false);
     return result;
   }
 }
