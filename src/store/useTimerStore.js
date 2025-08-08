@@ -8,4 +8,13 @@ export const useTimerStore = create(set => ({
   setStudyTime: minutes => set({studyTime: minutes}),
   setBreakTime: minutes => set({breakTime: minutes}),
   setCycles: count => set({cycles: count}),
-}))
+
+  // 카운트된 값 저장
+  dailyCount: 0,              // 오늘 완료된 사이클 수  
+  incrementDaily: (by = 1) => // 완료될 때마다 증가
+    set(state => ({
+      dailyCount: state.dailyCount + by
+    })),
+  resetDaily: () => 
+    set({dailyCount: 0}),     // 매일 자정 값 전송 후 0으로 초기화
+}));
