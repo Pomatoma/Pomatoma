@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import FormInput from './FormInput';
 import Button from '../../../components/Button';
 import { login } from '../service/authService';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import { useUserStore } from '../../../store/userStore';
 
@@ -26,14 +26,12 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    
+   
     // 로딩 시작
     const loadingToast = showLoading('로그인 중...');
     
     try {
       const result = await login(data); 
-      console.log(result);
       
       if(result.success === true) {
         // 로딩 종료 및 성공 메시지
@@ -88,10 +86,18 @@ export default function LoginForm() {
               pattern: { value: /^[a-zA-Z0-9]+$/, message: '영문과 숫자조합으로 입력해주세요' },
             })}
           />
-
+          <div className='flex justify-end mb-4'>
+            <NavLink to='/auth/forgot-password' className='text-sm text-gray-500 hover:text-gray-700'>비밀번호 찾기</NavLink>
+          </div>
           <Button size='full' filled='filled' disabled={isLoading} type='submit'>
             로그인
           </Button>
+          <div className='mt-4'>
+            <p className=' text-center text-sm text-gray-500 my-4'>아직 회원이 아니신가요?</p>
+          <Button size='full' filled='outline' disabled={isLoading} type='button' onClick={() => navigate('/auth/register')}>
+            회원가입
+          </Button>
+          </div>
         </form>
       </div>
     </div>
