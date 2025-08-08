@@ -39,6 +39,7 @@ export default function RegisterForm() {
         const addResult = await addUserStore({
           username: data.username,
           userUid: result.user.uid,
+          email: data.userid,
         });
         
         // 로딩 종료 및 성공 메시지
