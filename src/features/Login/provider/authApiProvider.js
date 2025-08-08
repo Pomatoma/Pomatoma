@@ -1,5 +1,5 @@
 // feature/Login/service/authService.js API 호출
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { db, auth } from '../../../../config/firbaseConfig';
 
@@ -35,7 +35,7 @@ export async function addUserFirestore({ username, userUid }) {
     console.log('생성된 참조:', userRef);
     
     const userData = {
-      userUid,
+      userUid,  
       username,
       createdAt: new Date().toISOString(),
     };
@@ -67,16 +67,51 @@ export async function loginUser({ userid, password }) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, userid, password);
     const user = userCredential.user;
-    console.log('로그인 성공:', user);
+    // console.log('로그인 성공:', user);
     return {
       success: true,
       user,
     };
   } catch (error) {
-    console.error('로그인 실패:', error);
+    // console.error('로그인 실패:', error);
+    if(error.message === 'Firebase: Error (auth/invalid-credential).') {
+      return {
+        success: false,
+        error: '이메일과 비밀번호를 다시 한 번 확인해주세요.',
+      };
+    } else {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+} 
+
+// 비밀번호 재설정 이메일 보내기 로직
+export async function findPassword(email) {
+  try {
+    auth.languageCode = 'ko';
+    const result = await sendPasswordResetEmail(auth, email)
+    .then(() => {
+      return {
+        success: true,
+        message: '비밀번호 재설정 이메일을 발송했습니다.<br/>이메일을 확인해주세요!',
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        error: error.message,
+      }
+    })
+
+    return result;
+  } catch (error) {
+    console.error('비밀번호 재설정 이메일 보내기 실패:', error);
     return {
       success: false,
       error: error.message,
-    };
+    }
   }
-} 
+}
+

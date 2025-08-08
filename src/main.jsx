@@ -9,7 +9,7 @@ import RootLayout from './components/RootLayout.jsx';
 import MainPage from './features/Main/MainPage.jsx';
 import TimerPage from './features/Time/TimerPage.jsx';
 import AuthPage from './features/Login/pages/AuthPage.jsx';
-import ForgotPasswordPage from './features/login/pages/ForgotPasswordPage.jsx';
+import ForgotPasswordPage from './features/Login/pages/ForgotPasswordPage.jsx';
 import LoginForm from './features/Login/components/LoginForm.jsx';
 import RegisterForm from './features/Login/components/RegisterForm.jsx';
 
