@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { findPassword } from '../provider/authApiProvider';
+import { findPassword } from '../service/authService';
 import FormInput from '../components/FormInput';
 import Button from '../../../components/Button';
 import { Toaster } from 'react-hot-toast';
@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
       return;
     }
     // 실제 있는 계정인지 확인 해야함
-    const result = await findPassword(email);
+    const result = await findPassword({username, email});
     
     if(result.success) {
       toast.success(result.message);

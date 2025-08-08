@@ -1,5 +1,5 @@
 // feature/Login/service/authService.js API 호출 추상화
-import { registerUser, addUserFirestore, loginUser } from '../provider/authApiProvider';
+import { registerUser, addUserFirestore, loginUser, checkUser, sendEmailtoResetPassword } from '../provider/authApiProvider';
 import { useUserStore } from '../../../store/userStore';
 
 export const signUp = async (userInfo) => {
@@ -28,4 +28,22 @@ export const login = async (userInfo) => {
   }
   useUserStore.getState().setLoading(false);
   return result;
+}
+
+// 비밀번호 찾기 로직
+export const findPassword = async (userInfo) => {
+  // 회원 확인
+  const user = await checkUser(userInfo);
+  
+  if(user.success === false) {
+    return {
+      success: false,
+      error: user.error,
+    };
+  } else {
+    console.log('비밀번호 찾기 로직 호출', userInfo.email);
+    const result = await sendEmailtoResetPassword(userInfo.email);
+    console.log('비밀번호 찾기 결과 (service)', result);
+    return result;
+  }
 }
