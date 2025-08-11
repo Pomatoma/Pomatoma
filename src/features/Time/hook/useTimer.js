@@ -5,6 +5,7 @@ import { getKstDateString } from "../../../utils/dateKST";
 import { ref, set } from "firebase/database";
 import { auth, db } from "../../../../config/firbaseConfig";
 import { scheuleDailyMidnight } from "../../../utils/scheduleMidnight";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 /*
  - studySec : 스터디 시간(초)
@@ -27,7 +28,9 @@ export default function useTimer({
   const resetDaily = useTimerStore((s) => s.resetDaily);
   const dailyCount = useTimerStore((s) => s.dailyCount);
 
-  const {userInfo, isAuthenticated} = useUserStore();
+  const userInfo = useAuthStore((s) => s.userInfo);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
 
   // 시간 포맷
   const formatTime = (sec) => {
@@ -38,14 +41,14 @@ export default function useTimer({
 
   // DB 저장 함수
   const saveDailyCountToDB = (count) => {
-    if(!isAuthenticated) return;
     const dateKey = getKstDateString();
     const uid = userInfo?.userUid ?? auth.currentUser?.uid;
     
     if(!uid){
       console.error('해당 uid가 없습니다. 저장을 건너뜁니다', {userInfo, authUser: auth.currentUser});
+      return;
     }
-
+    console.log('→ attempt to save dailyRecord', { dateKey, uid });
     const userDailyRef = ref(db, `users/${uid}/dailyRecord/${dateKey}/count`);
     set(userDailyRef, count)
       .then(() => console.log('DB 저장 성공: ',count))
@@ -54,23 +57,26 @@ export default function useTimer({
 
   // 자정 초기화
   useEffect(() => {
+    if (!isAuthenticated || !userInfo?.userUid) return;
+
     const cancelSchedule = scheuleDailyMidnight(() => {
       console.log('firebase 저장 및 초기화');
       saveDailyCountToDB(dailyCount);
       resetDaily();
     });
-    return cancelSchedule;
-  },[dailyCount, isAuthenticated, userInfo.userUid]);
+    return () => {
+      if(cancelSchedule) cancelSchedule();
+    }
+  },[dailyCount, isAuthenticated, userInfo?.userUid]);
 
   // 마운트 시 자동으로 start
   useEffect(() => {
     if(autoStart) {
       setMode('study');
       setRemaining(studySec);
-      // setCompletedCycles(0);
       setIsRunning(true);
     }
-  },[]);
+  },[autoStart, studySec]);
 
   // 시간 1초씩 깍음
   useEffect(() => {

@@ -3,6 +3,7 @@ export function msUntilNextMidnightKST(){
   const utcMs =now.getTime() + now.getTimezoneOffset() * 60_000;
   const kstMs = utcMs + 9 * 3_600_000;
   const nowKST = new Date(kstMs);
+  // console.log('nowKST: ',nowKST.toString());
 
   const nextMidnightKST = new Date(
     nowKST.getFullYear(),
