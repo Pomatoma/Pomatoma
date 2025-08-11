@@ -1,7 +1,4 @@
 import { create } from 'zustand';
-import { db } from '../../config/firbaseConfig';
-import { getKstDateString } from '../utils/dateKST';
-import { scheuleDailyMidnight } from '../utils/scheduleMidnight';
 
 const useUserStore = create((set) => ({
   userInfo: {
