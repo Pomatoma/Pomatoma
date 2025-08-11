@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from '../../components/Button';
 import useTimer from './hook/useTimer';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,10 @@ import useSound from 'use-sound';
 
 export default function TimerPage() {
   const navigate = useNavigate();
-  const {studyTime, breakTime, cycles} = useTimerStore();
+  // const {studyTime, breakTime, cycles} = useTimerStore();
+  const studyTime = useTimerStore(state => state.studyTime);
+  const breakTime = useTimerStore(state => state.breakTime);
+  const cycles = useTimerStore(state => state.cycles);
   const {
     mode,
     isRunning,
@@ -34,10 +37,10 @@ export default function TimerPage() {
 
   useEffect(() => {
     if(prevRemRef.current > 0 && remaining === 0){
-      playAlarm()
+      playAlarm();
     }
-    prevRemRef.current = remaining
-  },[remaining, playAlarm])
+    prevRemRef.current = remaining;
+  },[remaining, playAlarm]);
 
   // 그만두기
   const handleStop = () => {

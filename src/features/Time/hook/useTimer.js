@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useTimerStore } from "../../../store/useTimerStore";
 
 /*
  - studySec : 스터디 시간(초)
  - breakSec : 쉬는 시간(초)
  - cycles : 반복 횟수
  */
+
 export default function useTimer({
   studySec,
   breakSec,
@@ -18,8 +20,12 @@ export default function useTimer({
   // 실행 중
   const [isRunning, setIsRunning] = useState(false);
   // 완료된 횟수
-  const [completedCycles, setCompletedCycles] = useState(0);
+  // const [completedCycles, setCompletedCycles] = useState(0);
   const timerRef = useRef(null);
+
+  // dailyCount 올리는 함수
+  const incrementDaily = useTimerStore((s) => s.incrementDaily);
+  const dailyCount = useTimerStore((s) => s.dailyCount);
 
   // 시간 포맷
   const formatTime = (sec) => {
@@ -33,59 +39,52 @@ export default function useTimer({
     if(autoStart) {
       setMode('study');
       setRemaining(studySec);
-      setCompletedCycles(0);
+      // setCompletedCycles(0);
       setIsRunning(true);
     }
   },[]);
 
+  // 시간 1초씩 깍음
   useEffect(() => {
     if(!isRunning) return;
 
     timerRef.current = setInterval(() => {
-      setRemaining(prev => {
-        if(prev >1) {
-          return prev-1;
-        }
-        if(prev === 1) {
-          return 0;
-        }
-       
-          clearInterval(timerRef.current);
-
-          // study -> break
-          // 카운트 올림
-          if(mode === 'study'){
-            const count = completedCycles +1;
-            setCompletedCycles(count);
-            console.log('[현재까지 완료된 횟수] : ', completedCycles);
-            setMode('break');
-            return breakSec;
-          }
-
-          // break -> study
-          // completedCycles < cycles면 다시 study
-          // completedCycles >= cycles면 타이머 종료
-          if(mode === 'break'){
-            if(completedCycles>= cycles){
-              console.log('[타이머 종료] completedCycles : ', completedCycles);
-              setIsRunning(false);
-              return 0;
-            } else{
-              setMode('study');
-              return studySec;
-            }
-          }
-          return 0;
-      })
-    },1000)
+      setRemaining((prev) => (prev >0 ? prev -1 : 0));
+    }, 1000);
     return () => clearInterval(timerRef.current);
-  },[isRunning, mode, completedCycles, cycles, studySec, breakSec]);
+  },[isRunning]);
+
+  useEffect(() => {
+    if (remaining !== 0) return;
+  
+    const timeout = setTimeout(() => {
+      if (mode === 'study') {
+        console.log('incrementDaily 호출');
+        incrementDaily();
+        setMode('break');
+        setRemaining(breakSec);
+        return;
+      }
+  
+      if (mode === 'break') {
+        if (dailyCount >= cycles) {
+          setIsRunning(false);
+        } else {
+          setMode('study');
+          setRemaining(studySec);
+        }
+      }
+    }, 1000);
+  
+    return () => clearTimeout(timeout);
+  }, [remaining, mode, breakSec, studySec, cycles, incrementDaily, dailyCount]);
+  
 
   const start = () => {
     clearInterval(timerRef.current)
+    useTimerStore.getState().resetDaily();
     setMode('study')
     setRemaining(studySec)
-    setCompletedCycles(0)
     setIsRunning(true)
   };
 
@@ -97,11 +96,11 @@ export default function useTimer({
   const resume = () => {
     setIsRunning(true)
   };
+
   return {
     mode,
     formatted: formatTime(remaining),
     isRunning,
-    completedCycles,
     totalCycles: cycles,
     remaining,
     start,
