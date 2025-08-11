@@ -1,6 +1,6 @@
 // feature/Login/service/authService.js API 호출
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
+import { ref, set, get, query, orderByChild, equalTo } from 'firebase/database';
 import { db, auth } from '../../../../config/firbaseConfig';
 
 // 회원가입 로직 
@@ -26,25 +26,19 @@ export async function registerUser({ username, userid, password }) {
 }
 
 // 회원가입 성공 시 파이어 스토어에 저장
-export async function addUserFirestore({ username, userUid }) {
-  console.log('Firestore에 저장할 유저 정보:', userUid, username);
-  console.log('DB 객체 확인:', db);
-  
+export async function addUserFirestore({ username, userUid, email }) {
+
   try {
     const userRef = ref(db, 'users/' + userUid);
-    console.log('생성된 참조:', userRef);
-    
     const userData = {
       userUid,  
       username,
+      email,
       createdAt: new Date().toISOString(),
     };
-    console.log('저장할 데이터:', userData);
-    
-    //여기서부터 동작을 하지 않음
+
     await set(userRef, userData);
-    console.log('회원가입 DB 저장 성공:', userUid);
-    
+  
     return {
       success: true,
       message: '회원가입 성공',
@@ -88,15 +82,59 @@ export async function loginUser({ userid, password }) {
   }
 } 
 
-// 비밀번호 재설정 이메일 보내기 로직
-export async function findPassword(email) {
+// 회원이 등록되어있는지 확인 로직
+export async function checkUser({username, email}) {
+  try {
+    const userRef = ref(db, 'users');
+    const userQuery = query(userRef, orderByChild('username'), equalTo(username));
+    const snapshot = await get(userQuery); // .once('value') 대신 get() 사용하는 것이 더 최신 방식입니다.
+
+    if(snapshot.exists()) {
+      let foundUser = null;
+      snapshot.forEach((childSnapshot) => {
+        const userData = childSnapshot.val();
+        // console.log('회원 확인 결과 (username 일치):', userData);
+        // 이메일 비교
+        if (userData.email === email) {
+          foundUser = userData;
+        }
+      });
+
+      if (foundUser) {
+        return {
+          success: true,
+          user: foundUser,
+        };
+      } else {
+        return {
+          success: false,
+          error: '이메일이 일치하지 않습니다.',
+        };
+      }
+    } else {
+      return {
+        success: false,
+        error: '회원이 존재하지 않습니다.',
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: '회원 확인 중 오류가 발생했습니다.', // 에러 메시지를 좀 더 명확하게
+    };
+  }
+}
+
+
+// 비밀번호 재설정 이메일 보내는 로직
+export async function sendEmailtoResetPassword(email) {
   try {
     auth.languageCode = 'ko';
     const result = await sendPasswordResetEmail(auth, email)
     .then(() => {
       return {
         success: true,
-        message: '비밀번호 재설정 이메일을 발송했습니다.<br/>이메일을 확인해주세요!',
+        message: '비밀번호 재설정 이메일을 발송했습니다.\n이메일을 확인해주세요!',
       }
     }).catch((error) => {
       return {
@@ -104,7 +142,6 @@ export async function findPassword(email) {
         error: error.message,
       }
     })
-
     return result;
   } catch (error) {
     console.error('비밀번호 재설정 이메일 보내기 실패:', error);
