@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useTimerStore } from "../../../store/useTimerStore";
-import { useUserStore } from "../../../store/userStore";
 import { getKstDateString } from "../../../utils/dateKST";
 import { ref, set } from "firebase/database";
 import { auth, db } from "../../../../config/firbaseConfig";
