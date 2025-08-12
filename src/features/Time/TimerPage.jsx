@@ -8,6 +8,8 @@ import { useTimerStore } from '../../store/useTimerStore';
 import notification from '../../assets/sounds/notification.mp3';
 import useSound from 'use-sound';
 
+import useBeforeUnload from './hook/useBeforeUnload';
+
 export default function TimerPage() {
   const navigate = useNavigate();
   // const {studyTime, breakTime, cycles} = useTimerStore();
@@ -30,6 +32,10 @@ export default function TimerPage() {
   const [playAlarm] = useSound(notification);
   // remaining 값 저장
   const prevRemRef = useRef(remaining);
+
+  // 새로고침 알림
+  useBeforeUnload();
+
 
   useEffect(() => {
     start()
