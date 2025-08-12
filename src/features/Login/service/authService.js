@@ -24,7 +24,7 @@ export const login = async (userInfo) => {
   useAuthStore.getState().setLoading(true);
   const result = await loginUser({ userid, password });
   if(result.success === true) {
-    useAuthStore.getState().setUser(result.user);
+    useAuthStore.getState().setUserFromAuth(result.userInfo);
   }
   useAuthStore.getState().setLoading(false);
   return result;
