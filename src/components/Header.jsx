@@ -1,11 +1,11 @@
 import React from 'react';
 import Button from './Button';
 import TomatoIcon from '../assets/icons/tomato.svg'; // ReactComponent로 import
-import { useUserStore } from '../store/userStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
-  const { isAuthenticated, logout } = useUserStore();
+  const { isAuthenticated, logout } = useAuthStore();
   let navigate = useNavigate();
   return (
     <div className='py-2 px-8 w-full bg-[var(--color-secondary)] flex flex-row justify-between items-center'>

@@ -7,11 +7,11 @@ import FormInput from '../components/FormInput';
 import Button from '../../../components/Button';
 import { Toaster } from 'react-hot-toast';
 import useToast from '../hooks/useToast';
-import { useUserStore } from '../../../store/userStore';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function ForgotPasswordPage() {
   const { showLoading } = useToast();
-  const { isLoading } = useUserStore();
+  const { isLoading } = useAuthStore();
   const {
     register,
     formState: { errors },

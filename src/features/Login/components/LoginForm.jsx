@@ -5,11 +5,11 @@ import Button from '../../../components/Button';
 import { login } from '../service/authService';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
-import { useUserStore } from '../../../store/userStore';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { isLoading } = useUserStore();
+  const { isLoading } = useAuthStore();
   const { showLoading } = useToast();
 
   const {
