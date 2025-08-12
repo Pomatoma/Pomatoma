@@ -13,6 +13,8 @@ import ForgotPasswordPage from './features/Login/pages/ForgotPasswordPage.jsx';
 import LoginForm from './features/Login/components/LoginForm.jsx';
 import RegisterForm from './features/Login/components/RegisterForm.jsx';
 
+import AuthInitializer from './components/AuthInitializer.jsx';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -42,6 +44,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <AuthInitializer />
     <RouterProvider router={router} />
   </StrictMode>
 );
