@@ -11,33 +11,33 @@ export default function Calender() {
   }
 
   return (
-    <div className='w-full h-full overflow-auto max-w-[1200px] max-h-[500px]'>
-      <div className='min-w-fit p-4'>
-      {
-        Array.from({ length: 12 }).map((_, monthIndex) => {
-          const currentMonth = monthIndex + 1;
-          const daysInMonth = getDaysInMonth(year, currentMonth);
+      <div className='w-full overflow-x-auto max-h-[600px] min-w-[900px]'>
+        <div className='min-w-fit p-5'>
+          {
+            Array.from({length: 12}).map((_, monthIndex) => {
+              const currentMonth = monthIndex + 1;
+              const daysInMonth = getDaysInMonth(year, currentMonth);
 
-          return (
-              <div key={monthIndex} className="flex items-center mb-2">
-                {/*월 표시*/}
-                <div className="w-8 text-sm font-bold">{currentMonth}</div>
+              return (
+                  <div key={monthIndex} className="flex items-center mb-2">
+                    {/*월 표시*/}
+                    <div className="w-8 text-xs font-bold">{currentMonth}</div>
 
-                {/* 날짜 표시 */}
-                <div className="flex flex-wrap gap-1">
-                  {Array.from({ length: daysInMonth }).map((_, dayIndex) => (
-                      <div
-                          key={dayIndex}
-                          className="w-8 h-10 border border-gray-300 flex justify-center text-xs"
-                      >
-                        {dayIndex + 1}
-                      </div>
-                  ))}
-                </div>
-              </div>
-          );
-        })}
+                    {/* 날짜 표시 */}
+                    <div className="flex flex-wrap gap-x-0.5">
+                      {Array.from({length: daysInMonth}).map((_, dayIndex) => (
+                          <div
+                              key={dayIndex}
+                              className="w-6 h-8 border border-gray-300 flex justify-center text-[10px]"
+                          >
+                            {dayIndex + 1}
+                          </div>
+                      ))}
+                    </div>
+                  </div>
+              );
+            })}
+        </div>
       </div>
-    </div>
   );
 }
