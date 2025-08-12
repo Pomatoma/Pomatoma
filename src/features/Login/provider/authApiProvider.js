@@ -64,7 +64,10 @@ export async function loginUser({ userid, password }) {
     // console.log('로그인 성공:', user);
     return {
       success: true,
-      user,
+      userInfo: {
+        uid: user.uid,
+        email: user.email,
+      },
     };
   } catch (error) {
     // console.error('로그인 실패:', error);
