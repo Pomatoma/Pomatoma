@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTimerStore } from "../../../store/useTimerStore";
 import { getKstDateString } from "../../../utils/dateKST";
-import { ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 import { auth, db } from "../../../../config/firbaseConfig";
 import { scheuleDailyMidnight } from "../../../utils/scheduleMidnight";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -26,6 +26,7 @@ export default function useTimer({
   const scheduleSetRef = useRef(false); // 중복 스케줄 방지
 
   const incrementDaily = useTimerStore((s) => s.incrementDaily);
+  const setDailyCount = useTimerStore((s) => s.setDailyCount);
   const dailyCount = useTimerStore((s) => s.dailyCount);
 
   const userInfo = useAuthStore((s) => s.userInfo);
@@ -38,6 +39,24 @@ export default function useTimer({
     const s = String(sec%60).padStart(2,'0');
     return `${m}:${s}`
   }
+
+  // DB에서 오늘 count값 가져오기 (없으면 0으로 초기화)
+  const initDailyCount = async (uid) => {
+    const dateKey = getKstDateString();
+    const userDailyRef = ref(db, `users/${uid}/dailyRecord/${dateKey}/count`);
+    try{
+      const snapshot = await get(userDailyRef);
+      if(snapshot.exists()){
+        return snapshot.val();
+      } else {
+        await set(userDailyRef, 0);
+        return 0;
+      }
+    } catch(err){
+      console.error('초기 dailyCount 가져오기 실패',err);
+      return 0;
+    }
+  };
 
   // DB 저장 함수
   const saveDailyCountToDB = (count) => {
@@ -56,6 +75,15 @@ export default function useTimer({
       .then(() => console.log('DB 저장 성공: ',count))
       .catch((err) => console.log('DB 저장 실패: ',err));
   };
+
+  // 초기 dailyCount 가져와서 세팅
+  useEffect(() => {
+    if (!isAuthenticated || !userInfo?.userUid) return;
+    (async () => {
+      const countFromDB = await initDailyCount(userInfo.userUid);
+      console.log('초기 daliyCount 세팅: ',countFromDB);
+    })();
+  },[isAuthenticated, userInfo?.userUid, setDailyCount]);
 
   // 자정 초기화
   useEffect(() => {
@@ -130,7 +158,6 @@ export default function useTimer({
 
   const start = () => {
     clearInterval(timerRef.current);
-    useTimerStore.getState().resetDaily();
     setMode('study');
     setRemaining(studySec);
     lastTickRef.current = Date.now();

@@ -18,4 +18,8 @@ export const useTimerStore = create(set => ({
     })),
   resetDaily: () => 
     set({dailyCount: 0}),     // 매일 자정 값 전송 후 0으로 초기화
+  setDailyCount: (count) =>
+     set({
+      dailyCount: count
+    }),
 }));
