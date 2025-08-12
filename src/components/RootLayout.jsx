@@ -3,14 +3,14 @@ import Header from './Header';
 import { Outlet } from 'react-router-dom';
 import FloatButton from './FloatButton';
 import Modal from './Modal';
-import {useUserStore} from "../store/userStore.js";
+import {useAuthStore} from "../store/useAuthStore.js";
 import {navigate} from "jsdom/lib/jsdom/living/window/navigation.js";
 import {useNavigate} from "react-router-dom";
 
 export default function RootLayout() {
     const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useAuthStore();
 
     const handleOpenModal = () => {
         if (!isAuthenticated) {

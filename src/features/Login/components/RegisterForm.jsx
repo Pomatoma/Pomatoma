@@ -5,7 +5,7 @@ import Button from '../../../components/Button';
 import { signUp, addUserStore } from '../service/authService';
 import { useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
-import { useUserStore } from '../../../store/userStore';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function RegisterForm() {
   const {
@@ -26,7 +26,7 @@ export default function RegisterForm() {
   });
   const navigate = useNavigate();
   const { showLoading } = useToast();
-  const { isLoading } = useUserStore();
+  const { isLoading } = useAuthStore();
   const onSubmit = async (data) => {
     // 로딩 시작
     const loadingToast = showLoading('회원가입 중...');
