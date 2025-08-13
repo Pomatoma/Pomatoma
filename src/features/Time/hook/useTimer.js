@@ -32,7 +32,6 @@ export default function useTimer({
   const userInfo = useAuthStore((s) => s.userInfo);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-
   // 시간 포맷
   const formatTime = (sec) => {
     const m = String(Math.floor(sec/60)).padStart(2,'0');
@@ -69,21 +68,43 @@ export default function useTimer({
         authUser: auth.currentUser});
       return;
     }
-    console.log('날짜, 사용자 uid : ', { dateKey, uid });
+    // console.log('날짜, 사용자 uid : ', { dateKey, uid });
     const userDailyRef = ref(db, `users/${uid}/dailyRecord/${dateKey}/count`);
     set(userDailyRef, count)
       .then(() => console.log('DB 저장 성공: ',count))
       .catch((err) => console.log('DB 저장 실패: ',err));
   };
 
-  // 초기 dailyCount 가져와서 세팅
+  // 추가 : 날짜 변경 감지 초기화 (앱 재시작 시)
   useEffect(() => {
-    if (!isAuthenticated || !userInfo?.userUid) return;
+    if(!isAuthenticated || !userInfo?.userUid) return;
+    
+    const todayKey = getKstDateString();
+    const lastDateKey = useTimerStore.getState().lastDateKey;
+
+    if(lastDateKey !==todayKey){
+      console.log("날짜 변경 감지, dailyCount 초기화");
+      useTimerStore.getState().resetDaily();
+      saveDailyCountToDB(0);
+    }
+
     (async () => {
       const countFromDB = await initDailyCount(userInfo.userUid);
       console.log('초기 daliyCount 세팅: ',countFromDB);
+      setDailyCount(countFromDB);
+      useTimerStore.setState({lastDateKey: todayKey});
     })();
-  },[isAuthenticated, userInfo?.userUid, setDailyCount]);
+  
+  }, [isAuthenticated, userInfo?.userUid, setDailyCount]);
+
+  // 초기 dailyCount 가져와서 세팅
+  // useEffect(() => {
+  //   if (!isAuthenticated || !userInfo?.userUid) return;
+  //   (async () => {
+  //     const countFromDB = await initDailyCount(userInfo.userUid);
+  //     console.log('초기 daliyCount 세팅: ',countFromDB);
+  //   })();
+  // },[isAuthenticated, userInfo?.userUid, setDailyCount]);
 
   // 자정 초기화
   useEffect(() => {
@@ -97,6 +118,7 @@ export default function useTimer({
       const {dailyCount, resetDaily} = useTimerStore.getState();
       saveDailyCountToDB(dailyCount);
       resetDaily();
+      useTimerStore.setState({lastDateKey: getKstDateString()});
     });
     return cancelSchedule;
   },[isAuthenticated, userInfo?.userUid]);
