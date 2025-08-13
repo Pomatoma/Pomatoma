@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header';
 import { Outlet } from 'react-router-dom';
 import FloatButton from './FloatButton';
+import Modal from './Modal';
+import {useAuthStore} from "../store/useAuthStore.js";
+import {navigate} from "jsdom/lib/jsdom/living/window/navigation.js";
+import {useNavigate} from "react-router-dom";
 
 export default function RootLayout() {
-  return (
+    const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+
+    const handleOpenModal = () => {
+        if (!isAuthenticated) {
+            alert("로그인 후 이용해주세요.");
+            navigate('/auth/login');
+            return;
+        }
+        setIsModalOpen(true);
+    };
+
+
+    return (
     <div className='min-h-screen bg-gray-50'>
       <Header />
-      <main className='container mx-auto px-4 py-8'>
+        <main className='w-full px-4 py-8'>
+        {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
         <Outlet />
       </main>
-      {/* <FloatButton /> */}
+      <FloatButton setIsModalOpen={handleOpenModal} isModalOpen={isModalOpen} />
     </div>
   );
 }

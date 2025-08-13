@@ -5,6 +5,7 @@ const storageBucket = import.meta.env.VITE_FIRBASE_STORAGE_BUCKTET;
 const messagingSenderId = import.meta.env.VITE_FIRBASE_MESSAGE_SENDER_ID;
 const appId = import.meta.env.VITE_FIRBASE_APP_ID;
 const measurementId = import.meta.env.VITE_FIRBASE_MEASUREMENT_ID;
+const databaseURL = import.meta.env.VITE_FIRBASE_DATABASE_URL;
 
 export const firebaseSettings = {
   apiKey,
@@ -15,4 +16,5 @@ export const firebaseSettings = {
   messagingSenderId,
   measurementId,
   appId,
+  databaseURL,
 };

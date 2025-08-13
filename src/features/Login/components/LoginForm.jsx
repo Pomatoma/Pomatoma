@@ -2,8 +2,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import FormInput from './FormInput';
 import Button from '../../../components/Button';
+import { login } from '../service/authService';
+import { NavLink, useNavigate } from 'react-router-dom';
+import useToast from '../hooks/useToast';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+  const { isLoading } = useAuthStore();
+  const { showLoading } = useToast();
+
   const {
     register,
     handleSubmit,
@@ -17,8 +25,32 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+   
+    // 로딩 시작
+    const loadingToast = showLoading('로그인 중...');
+    
+    try {
+      const result = await login(data); 
+      
+      if(result.success === true) {
+        // 로딩 종료 및 성공 메시지
+        loadingToast.success('로그인 되었습니다!');
+        
+        // 잠시 후 메인 페이지로 이동
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        console.log(result.error);
+        // 로딩 종료 및 에러 메시지
+        loadingToast.error(result.error || '로그인에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('로그인 중 오류 발생:', error);
+      // 로딩 종료 및 에러 메시지
+      loadingToast.error('로그인 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -54,10 +86,18 @@ export default function LoginForm() {
               pattern: { value: /^[a-zA-Z0-9]+$/, message: '영문과 숫자조합으로 입력해주세요' },
             })}
           />
-
-          <Button size='full' filled='filled' disabled={false} type='submit'>
+          <div className='flex justify-end mb-4'>
+            <NavLink to='/auth/forgot-password' className='text-sm text-gray-500 hover:text-gray-700'>비밀번호 찾기</NavLink>
+          </div>
+          <Button size='full' filled='filled' disabled={isLoading} type='submit'>
             로그인
           </Button>
+          <div className='mt-4'>
+            <p className=' text-center text-sm text-gray-500 my-4'>아직 회원이 아니신가요?</p>
+          <Button size='full' filled='outline' disabled={isLoading} type='button' onClick={() => navigate('/auth/register')}>
+            회원가입
+          </Button>
+          </div>
         </form>
       </div>
     </div>
