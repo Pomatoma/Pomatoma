@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { findPassword } from '../service/authService';
+import { findPassword } from '../provider/authProvider';
 import FormInput from '../components/FormInput';
 import Button from '../../../components/Button';
 import { Toaster } from 'react-hot-toast';
