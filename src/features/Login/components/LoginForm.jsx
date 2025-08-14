@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import FormInput from './FormInput';
 import Button from '../../../components/Button';
-import { login } from '../service/authService';
+import { login } from '../provider/authProvider';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import { useAuthStore } from '../../../store/useAuthStore';
