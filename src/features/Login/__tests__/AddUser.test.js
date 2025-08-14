@@ -25,7 +25,7 @@ vi.mock('../../../../config/firbaseConfig', () => ({
 
 // 모킹 설정 후에 실제 함수들을 import
 // 이 순서가 중요함: 모킹을 먼저 하고 import해야 함
-import { signUp, addUserStore } from '../service/authService';
+import { signUp, addUserStore } from '../provider/authProvider';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 
